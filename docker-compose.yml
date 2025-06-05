@@ -1,0 +1,58 @@
+services: # all containers used for the app
+  source_postgres: # DB source
+    image: postgres:15.13-alpine3.22 # image from Docker Hub
+    ports:
+      - "5433:5432" # Map host:container
+    networks:
+      - elt_network # custom newtwork for all containers to talk to each other
+    environment: # Set environment variables
+      POSTGRES_DB: ${POSTGRES_DB_SOURCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./source_db_init/init.sql:/docker-entrypoint-initdb.d/init.sql # Mount local init.sql file to container
+
+
+  destination_postgres: # DB target
+    image: postgres:15.13-alpine3.22
+    ports:
+      - "5434:5432"
+    networks:
+      - elt_network
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_DEST}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  
+
+  elt_script: # Run the Extract, Load, Transform script
+    build:
+      context: . # Path
+      dockerfile: src/Dockerfile # Dockerfile to build image
+    env_file:
+      - .env
+    command: ["python", "elt_script.py"] # Command to run when contaner starts
+    networks: # Connect to same network as other containers
+      - elt_network
+    depends_on: # This container starts only after the listed DB are up and running
+      - source_postgres
+      - destination_postgres
+  
+  dbt: # This container starts only after elt_script is done
+    image: ghcr.io/dbt-labs/dbt-postgres:1.8.2@sha256:95d7bb3a14fc9e1b7122e1389e80c8710c87da7ac57b6ccc1ec4eae3b9bbd2ac
+    command: ["run", "--profiles-dir", "/root", "--project-dir", "/dbt"]
+    networks:
+      - elt_network
+    environment:
+      DBT_TARGET: dev
+    volumes:
+      - ./custom_postgres:/dbt
+      - ~/.dbt:/root
+    depends_on: 
+      elt_script:
+        condition: service_completed_successfully 
+
+networks: # Define a custom network to use for all Services
+  elt_network:
+    driver: bridge # Default driver from docker
+
