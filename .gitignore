@@ -1,0 +1,103 @@
+# This .gitignore covers Python, Docker, DBT, Airflow, FastAPI, Flask, and common IDEs.
+
+#########################################
+# 🐍 Python virtual environments
+#########################################
+.venv/
+venv/
+env/
+.env/
+
+#########################################
+# 🔐 Secrets and environment variables
+#########################################
+.env
+config.json
+secrets.json
+*.key
+*.pem
+
+#########################################
+# 🧠 Python internals and caches
+#########################################
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.tox/
+.nox/
+*.egg-info/
+pip-wheel-metadata/
+dist/
+build/
+
+#########################################
+# 📝 Black, isort, and other formatters
+#########################################
+.cache/
+*.cover
+*.log
+
+#########################################
+# 📓 Jupyter Notebook checkpoints
+#########################################
+.ipynb_checkpoints/
+
+#########################################
+# 🧪 Snapshot testing (e.g. pytest-snapshot)
+#########################################
+__snapshots__/
+
+#########################################
+# 🛠️ IDE and editor settings
+#########################################
+.vscode/
+.idea/
+
+#########################################
+# 💻 Operating system files
+#########################################
+.DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+Icon?
+
+#########################################
+# 📝 Backup and temp files
+#########################################
+*~
+*.swp
+*.swo
+*.swn
+
+#########################################
+# 📦 Misc project artifacts
+#########################################
+.python-version
+pyvenv.cfg
+bin/
+lib/
+share/
+
+#########################################
+# 🐳 Docker
+#########################################
+*.tar
+*.bak
+*.old
+*.orig
+docker-compose.override.yml
+
+#########################################
+# 📊 DBT
+#########################################
+dbt_modules/
+dbt_packages/
+target/
+dbt/logs/
+manifest.json
+run_results.json
