@@ -1,4 +1,4 @@
-# This .gitignore covers Python, Docker, DBT, Airflow, FastAPI, Flask, and common IDEs.
+# This .gitignore covers Python, Docker, DBT, Airflow and common IDEs.
 
 #########################################
 # 🐍 Python virtual environments
@@ -101,3 +101,12 @@ target/
 dbt/logs/
 manifest.json
 run_results.json
+
+#########################################
+# ⏳ Apache Airflow
+#########################################
+airflow.db
+airflow.cfg
+airflow/logs/
+dags/__pycache__/
+plugins/__pycache__/
